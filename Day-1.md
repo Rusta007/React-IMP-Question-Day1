@@ -23,6 +23,9 @@ Whenever any modifications happen in the web application, the entire UI is re-re
 Then it checks the difference between the previous DOM representation and new DOM, this difference between them known as Diffing Algorithm.  
 Once it has done, the real DOM will update only the things that have actually changed. This makes the application faster, and there is no wastage of memory.
 ```
+![what-is-dom-in-react2](https://user-images.githubusercontent.com/94469107/221536238-7a9fb497-c505-4202-809b-36b342063e1c.jpg)
+
+
 4. Components 
  ```
  A Component is one of the core building blocks of React. 
