@@ -104,3 +104,23 @@ Search Engine Optimization (SEO) is the process of optimizing your website in or
 | State cannot be accepted by **child component** . | Props can be accessed by the **child component** .|
 | State can be used for rendering dynamic changes with the components. | Props are used to communicate between two components. |
 | State cannot make components reusable. | Props can make components to re-usable. |
+
+## Pass Props Parent to Child Component 
+
+![Screenshot 2023-02-27 162940](https://user-images.githubusercontent.com/94469107/221546758-a25898ef-666f-4137-abcf-9422c4ee96bc.png)
+
+## Pass Props Child to Parent Component 
+
+![Screenshot 2023-02-27 164459](https://user-images.githubusercontent.com/94469107/221549637-b6863545-de2f-4c2f-9d39-99aed2e28ecc.png)
+
+## Update State
+
+#### Code
+
+![Screenshot 2023-02-27 165338](https://user-images.githubusercontent.com/94469107/221551565-8f1b51f4-1854-4450-a517-4f098dfeace5.png)
+
+#### Output
+
+![update-state-on-props-change](https://user-images.githubusercontent.com/94469107/221552208-0d1cb97b-a641-4b8a-98ca-60e334978f2a.gif)
+
+
