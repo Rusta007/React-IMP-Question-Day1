@@ -17,9 +17,29 @@ It's developed by JORDAN WALKE, and maintained by Facebook.
 ```
 
 2. Virtual-Dom
-3. Components 
+```
+A virtual DOM object is a representation of the original DOM object. 
+Whenever any modifications happen in the web application, the entire UI is re-rendered in virtual DOM representation. 
+Then it checks the difference between the previous DOM representation and new DOM, this difference between them known as Diffing Algorithm.  
+Once it has done, the real DOM will update only the things that have actually changed. This makes the application faster, and there is no wastage of memory.
+```
+4. Components 
+ ```
+ A Component is one of the core building blocks of React. 
+ In other words, we can say that every application you will develop in React will be made up of pieces called components. 
+ Components make the task of building UIs much easier. 
+ You can see a UI broken down into multiple individual pieces called components and work on them independently and merge them all in a parent component which will be     your final UI. 
+ Components in React basically return a piece of JSX code that tells what should be rendered on the screen. 
+ In React, we mainly have two types of components: 
+ ```
 4. SPA (Single Page Application)
+```
+A single page application, the webpage does not reload the page during its runtime and instead works within a browser. 
+```
 5. SEO (Search Engine Optimization) Friendly 
+```
+Search Engine Optimization (SEO) is the process of optimizing your website in order to improve its visibility and ranking on search engines such as Google, Bing, and Yahoo.
+```
 6. Community Support 
 7. Build Web & Mobile Application 
 8. React Dev Tools
