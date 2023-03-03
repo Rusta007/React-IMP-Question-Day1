@@ -652,6 +652,1158 @@ export default App;
 
 ```
 
+## Stylig with Material UI
+- Material UI is an open-source React component library that implements Google's Material Design. 
+- It includes a comprehensive collection of prebuilt components that are ready for use in production right out of the box.
+
+#### Installing Material UI
+`$ npm install @material-ui/core @material-ui/icons`
+
+## Button
+
+![Screenshot 2023-03-01 124609](https://user-images.githubusercontent.com/94469107/222069903-d2103370-83ea-47cb-a7a6-8264bdb10b84.png)
+
+## ColorPicker
+
+![Screenshot 2023-03-01 124819](https://user-images.githubusercontent.com/94469107/222070287-61f0fd15-a016-4906-b53b-9753abe9390a.png)
+
+# Form
+
+## useState + Form
+
+![Screenshot 2023-03-01 133901](https://user-images.githubusercontent.com/94469107/222080967-9230c539-953f-47b7-a875-e0e8dafa1ae7.png)
+
+## useEffect + Form
+
+![Screenshot 2023-03-01 134614](https://user-images.githubusercontent.com/94469107/222082455-575324f8-17fd-46cd-bb5c-b3096dae5629.png)
+
+## useContext + Form
+
+```
+const MyContext = React.createContext();
+
+
+const useMyContext = (section, init) => {
+  // context and setContext came from MyContext.Provider
+ 
+ const { context, setContext } = React.useContext(MyContext)
+  const data = (context[section] === undefined) ? init : context[section]
+  const setData = (data) => setContext({...context, [section]: data})
+  return [data, setData]
+}
+
+// data and actions provider
+const useNameForm = () => {
+  const init = {
+    values: {
+      name: '',
+      surname: '',
+    },
+    errors: []
+  }
+  const [data, setData] = useMyContext('formName', init)
+  const changeValue = (input, value) => {
+    setData({...data, values: {...data.values, [input]: value}})
+  }
+  const setErrors = errors => {
+    setData({...data, errors})
+  }
+  return {data, changeValue, setErrors}
+}
+
+const Content = (props) => {
+  const {data, changeValue, setErrors} = useNameForm()
+
+  const handleChange = (event) => {
+    changeValue(event.target.name, event.target.value);
+  }
+  
+  const validate = (values) => {
+    const errors = []
+    !values.name && errors.push("Name is required")
+    !values.surname && errors.push("surname is required")
+    setErrors(errors)
+    return errors.length === 0
+  }
+  
+  const handleSubmit = (event) => {
+    if(validate(data.values)){
+      alert('form submited: ' + JSON.stringify(data.values))
+    }
+    event.preventDefault();
+  }
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>Name: <input type="text" value={data.values.name}
+                     name="name" onChange={handleChange} /></label><br />
+      <label>Surname: <input type="text" value={data.values.surname} 
+                        name="surname" onChange={handleChange} /></label>
+      <input type="submit" value="Submit" />
+      {data.errors.length > 0 && data.errors.map((err,i) => (
+        <p key={i}>{err}</p>
+      ))}
+    </form>
+  );
+}
+
+const DeepComponent = () => {
+  const { data } = useNameForm('formName')
+  return <div><br />DeepComponent:
+              <br />name: {data.values.name}
+              <br />surname: {data.values.surname}</div>
+}
+
+const App = (props) => {
+  const [data, setData] = React.useState({})
+  return (
+    <MyContext.Provider value={{
+        context: data,
+        setContext: newData => setData(newData)
+      }}>
+      <Content />
+      <DeepComponent />
+    </MyContext.Provider>
+  )
+}
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
+```
+
+## useReducer + Form
+
+```
+import { useReducer } from "react"
+
+type FormState = {
+    firstName: string
+    lastName: string
+    age: string
+    email: string
+    password: string
+}
+const initialState: FormState = {
+    firstName: "",
+    lastName: "",
+    age: "",
+    email: "",
+    password: ""
+}
+type FormValidityState = {
+    firstNameError: boolean
+    lastNameError: boolean
+    ageError: boolean
+    emailError: boolean
+    passwordError: boolean
+    isFormValid: boolean
+}
+const initialValidityState: FormValidityState = {
+    firstNameError: false,
+    lastNameError: false,
+    ageError: false,
+    emailError: false,
+    passwordError: false,
+    isFormValid: false
+}
+type FormAction = {
+    type: string
+    payLoad: string
+}
+type FormValidityAction = {
+    type: string
+    payLoad: FormState
+}
+const formReducer = (state: FormState, action: FormAction): FormState => {
+    switch(action.type){
+        case "UPDATE_FIRST_NAME": return{
+            ...state, firstName: action.payLoad, 
+        }
+        case "UPDATE_LAST_NAME": return{
+            ...state,lastName: action.payLoad, 
+        }
+        case "UPDATE_AGE": return{
+            ...state, age: action.payLoad, 
+        }
+        case "UPDATE_EMAIL": return{
+            ...state, email: action.payLoad, 
+        }
+        case "UPDATE_PASSWORD": return{
+            ...state, password: action.payLoad, 
+        }
+        default:
+            return state
+    }
+}
+const formValidityReducer = (state: FormValidityState, action: FormValidityAction): FormValidityState => {
+    let isValid: boolean = false;
+    switch(action.type){
+        
+        case "VALIDATE_FIRST_NAME": 
+        isValid = action.payLoad.firstName.length > 0 ? true: false
+        return{
+            ...state,
+            ...({firstNameError: !isValid, isFormValid: isValid && !state.lastNameError && !state.ageError && !state.emailError && !state.passwordError}),
+        }
+        case "VALIDATE_LAST_NAME": 
+        isValid = action.payLoad.lastName.length > 0 ? true: false
+        return{
+            ...state,
+            ...({lastNameError: !isValid, isFormValid: isValid && !state.firstNameError && !state.ageError && !state.emailError && !state.passwordError})
+        }
+        case "VALIDATE_AGE": 
+        isValid = action.payLoad.age.length > 0 ? true: false
+        return{
+            ...state,
+            ...({ageError: !isValid, isFormValid: isValid && !state.firstNameError && !state.lastNameError && !state.emailError && !state.passwordError})
+        }
+        case "VALIDATE_EMAIL": 
+        isValid = (action.payLoad.email.length > 0 && action.payLoad.email.includes("@")) ? true: false
+        return{
+            ...state,
+            ...({emailError: !isValid, isFormValid: isValid && !state.firstNameError && !state.lastNameError && !state.ageError && !state.passwordError})
+        }
+        case "VALIDATE_PASSWORD": 
+        isValid = action.payLoad.password.length > 9 ? true: false
+        return{
+            ...state,
+            ...({passwordError: !isValid, isFormValid: isValid && !state.firstNameError && !state.lastNameError && !state.ageError && !state.emailError})
+        }
+    default:
+        return state
+    }
+}
+
+export const Form = () => {
+    const [formData, setFormData] = useReducer(formReducer, initialState)
+    const [formValidityData, setFormValidityData] = useReducer(formValidityReducer, initialValidityState)
+
+    const onButtonPress = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        console.log(formData)
+        //Form submission happens here
+    }
+    return(
+        <div style={STYLE.container}>
+        <form onSubmit={onButtonPress}>
+            <label style={STYLE.formElement} htmlFor="first_name">First Name</label>
+            <div style={STYLE.formElement}>
+                <input 
+                id="first_name" 
+                style={{backgroundColor:formValidityData.firstNameError ?"pink" : ""}} 
+                onChange={(e) =>setFormData({type:"UPDATE_FIRST_NAME", payLoad:e.target.value})}
+                onBlur={(e) => setFormValidityData({type: "VALIDATE_FIRST_NAME", payLoad: formData})}
+                type="text"/>
+            </div>
+           <label style={STYLE.formElement} htmlFor="last_name">Last Name</label>
+            <div style={STYLE.formElement}>
+                <input 
+                id="last_name" 
+                style={{backgroundColor:formValidityData.lastNameError ? "pink" : ""}} 
+                onChange={(e) =>setFormData({type:"UPDATE_LAST_NAME", payLoad:e.target.value})}
+                onBlur={(e) => setFormValidityData({type: "VALIDATE_LAST_NAME", payLoad: formData})}
+                type="text"/>
+            </div>
+            <label style={STYLE.formElement} htmlFor="last_name">Email</label>
+            <div style={STYLE.formElement}>
+                <input 
+                id="email" 
+                style={{backgroundColor:formValidityData.emailError ? "pink" : ""}} 
+                onChange={(e) =>setFormData({type:"UPDATE_EMAIL", payLoad:e.target.value})}
+                onBlur={(e) => setFormValidityData({type: "VALIDATE_EMAIL", payLoad: formData})}
+                type="text"/>
+            </div>
+            <label style={STYLE.formElement} htmlFor="last_name">Password</label>
+            <div style={STYLE.formElement}>
+                <input 
+                id="password" 
+                style={{backgroundColor:formValidityData.passwordError ? "pink" : ""}} 
+                onChange={(e) =>setFormData({type:"UPDATE_PASSWORD", payLoad:e.target.value})}
+                onBlur={(e) => setFormValidityData({type: "VALIDATE_PASSWORD", payLoad: formData})}
+                type="password"/>
+            </div>
+           <label style={STYLE.formElement} htmlFor="age">Age</label>
+            <div style={STYLE.formElement}>
+                <input 
+                id="age" 
+                style={{backgroundColor:formValidityData.ageError ? "pink" : ""}} 
+                onChange={(e) =>setFormData({type:"UPDATE_AGE", payLoad:e.target.value})} 
+                onBlur={(e) => setFormValidityData({type: "VALIDATE_AGE", payLoad: formData})}
+                type="number"/>
+            </div>
+            <div style={STYLE.formElement}>
+                <input disabled={!formValidityData.isFormValid} type="submit" value={""+formValidityData.isFormValid}/>
+            </div>
+        </form>
+        </div>
+    )
+}
+const STYLE = {
+    container: {
+        borderRadius: "5px",
+        backgroundColor: "#f2f2f2",
+        padding: "20px",
+        maxWidth:"240px"
+    },
+    formElement: {
+        padding: "6px 24px"
+    }
+}
+```
+
+## useRef + Form
+
+```
+import React, { useRef } from "react"
+
+export default function App() {
+  const nameRef = useRef();
+  const emailRef = useRef()
+  const passwordRef = useRef()
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    //output the name
+    console.log(nameRef.current.value)
+    //output the email
+    console.log(emailRef.current.value)
+  }
+
+  return (
+    <div className="container">
+      <form onSubmit={handleSubmit}>
+        <div className="input_group">
+          <label>Name</label>
+          <input type="text" ref={nameRef}/>
+        </div>
+        <div className="input_group">
+          <label>Email</label>
+          <input type="text" ref={emailRef}/>
+        </div>
+        <div className="input_group">
+          <label>Password</label>
+          <input type="password" ref={passwordRef}/>
+        </div>
+        <input type="submit"/>
+      </form>
+    </div>
+  )
+}
+```
+
+# React Router
+
+- React Router is a JavaScript framework that lets us handle client and server-side routing in React applications. 
+- It enables the creation of single-page web or mobile apps that allow navigating without refreshing the page.
+- It also allows us to use browser history features while preserving the right application view.
+- Routing is a process in which a user is directed to different pages based on their action or request.
+- ReactJS Router is mainly used for developing Single Page Web Applications. 
+- React Router is used to define multiple routes in the application.
+- When a user types a specific URL into the browser, and if this URL path matches any 'route' inside the router file, the user will be redirected to that particular route.
+
+## React Router Installation
+`$ npm install react-router-dom --save   `
+
+### Adding React Router Components:
+1. **BrowserRouter** : 
+    - BrowserRouter is a router implementation that uses the HTML5 history API(pushState, replaceState and the popstate event) to keep your UI in sync with the URL. 
+    - It is the parent component that is used to store all of the other components.
+2. **Routes** :
+    - It’s a new component introduced in the v6 and a upgrade of the component. 
+    #### The main advantages of Routes over Switch are:
+    - Routes are chosen based on the best match instead of being traversed in order.
+3. **Route** :
+     - Route is the conditionally shown component that renders some UI when its path matches the current URL.
+4. **Link** :
+    - Link component is used to create links to different routes and implement navigation around the application. 
+    - It works like HTML anchor tag.
+
+## Code
+
+```
+import React, { Component } from 'react';
+import { BrowserRouter as Router,Routes, Route, Link } from 'react-router-dom';
+import Home from './component/home';
+import About from './component/about';
+import Contact from './component/contact';
+import './App.css';
+
+class App extends Component {
+render() {
+	return (
+	<Router>
+		<div className="App">
+			<ul className="App-header">
+			<li>
+				<Link to="/">Home</Link>
+			</li>
+			<li>
+				<Link to="/about">About Us</Link>
+			</li>
+			<li>
+				<Link to="/contact">Contact Us</Link>
+			</li>
+			</ul>
+		<Routes>
+				<Route exact path='/' element={< Home />}></Route>
+				<Route exact path='/about' element={< About />}></Route>
+				<Route exact path='/contact' element={< Contact />}></Route>
+		</Routes>
+		</div>
+	</Router>
+);
+}
+}
+
+export default App;
+```
+
+## Outlet
+
+```
+An <Outlet> should be used in parent route elements to render their child route elements. 
+This allows nested UI to show up when child routes are rendered. 
+If the parent route matched exactly, it will render a child index route or nothing if there is no index route.
+```
+
+## Code:
+```
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  Outlet
+} from 'react-router-dom';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="users" element={<Users />}>
+          <Route path="/" element={<UsersIndex />} />
+          <Route path=":id" element={<UserProfile />} />
+          <Route path="me" element={<OwnUserProfile />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Users() {
+  return (
+    <div>
+      <nav>
+        <Link to="me">My Profile</Link>
+      </nav>
+
+      <Outlet />
+    </div>
+  );
+}
+```
+
+## Lazy Loading :
+
+```
+Lazy loading is one of the most common design patterns used in web and mobile development. 
+It is widely used with frameworks like Angular and React to increase an application’s performance by reducing initial loading time.
+```
+
+```
+In simple terms, lazy loading is a design pattern. 
+It allows you to load parts of your application on-demand to reduce the initial load time. 
+For example, you can initially load the components and modules related to user login and registration. 
+Then, you can load the rest of the components based on user navigation.
+```
+
+```
+You might not feel much difference when using lazy loading for small-scale applications. 
+But it significantly impacts large-scale applications by reducing the initial load time. 
+Ultimately, it improves both the user experience and the application’s performance.
+```
+
+#### Advantages of Lazy Loading
+- Reduces initial loading time by reducing the bundle size.
+- Reduces browser workload.
+- Improves application performance in low bandwidth situations.
+- Improves user experience at initial loading.
+- Optimizes resource usage.
+
+#### Disadvantages of Lazy Loading
+- Not suitable for small-scale applications.
+- Placeholders can slow down quick scrolling.
+- Requires additional communication with the server to fetch resources.
+- Can affect SEO and ranking.
+
+
+## Code:
+```
+// Without React.lazy()
+import AboutComponent from './AboutComponent ';
+
+// With React.lazy()
+const AboutComponent = React.lazy(() => import('./AboutComponent '));
+
+const HomeComponent = () => (
+    <div><AboutComponent /></div>
+)
+```
+
+## React.Suspense:
+
+- When we use lazy loading, components are rendered as we navigate. 
+- So, we need to have a placeholder for those components until they are loaded. 
+- As a solution, React.Suspense was introduced, and it acts as a wrapper for the lazy components.
+- You can wrap a single lazy component, multiple lazy components, or multiple lazy components with different hierarchy levels with React.Suspense. 
+- In addition, it accepts a prop named fallback as the placeholder, and you can pass a component or an element for that.
+
+For example, you can pass the waiting or loading message as the fallback prop, and it will be displayed until the wrapped lazy component is rendered.
+
+```
+import React, { Suspense } from "react";
+const AboutComponent = React.lazy(() => import('./AboutComponent'));
+
+const HomeComponent = () => (
+    <div><Suspense fallback = { <div> Please Wait... </div> } >
+            <AboutComponent /></Suspense></div>
+);
+```
+
+```
+As you can see, you need to use both the React.lazy() and React.Suspense features to build a lazy-loading component in React. 
+These features are straightforward and anyone with basic React knowledge can easily use them.
+```
+
+## Memory Leak:
+```
+A Memory leak is a commonly faced issue when developing React applications. 
+A memory leak is a type of **resource leak** that occurs when an application incorrectly manages memory allocations. 
+That memory, which is not needed anymore, is not released for other processes to use. 
+A memory leak may also happen when an object is stored in a memory, but cannot be accessed by the running code.
+```
+
+## Why should you clean up memory leaks?
+```
+Memory leaks are commonly faced issues when developing React applications. 
+```
+
+### It causes many problems, including:
+
+- Affecting the project’s performance by reducing the amount of available memory;
+- Slowing down the application;
+- Refreshing the page randomly;
+- Crashing the system;
+- Overloading database with huge amounts of queries;
+
+## What causes a memory leak?
+
+```
+A memory leak appears when React applications created subscriptions that were made when a component was mounted and
+did not unsubscribe them when those components were unmounted.
+```
+### These subscriptions could be:
+
+- DOM Event listeners;
+- WebSocket subscriptions;
+- Requests to an API;
+
+## How to clean up memory leaks?
+```
+Modern programming languages and frameworks have techniques for clearing out data that is no longer needed. And react is not an exception.
+```
+
+Basically, we need to remove subscriptions when the component unmounts. For that there are three ways:
+
+1. Clearing Intervals
+```
+You may use setInterval function for creating repeating tasks every second or so. This will likely result in a memory leak error and it must be cleared after unmounting.
+```
+
+## Code
+
+```
+ useEffect(() => {
+    let isMounted = true;
+    
+    const interval = setInterval(() => {
+      if (isMounted) {
+        getData(cookiesList);
+      }
+    }, 5000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  });
+```
+
+## How to detect memory leaks?
+```
+There is a way to detect memory leaks before you get the error from react. Simply use google chrome’s developers tools. 
+Go to Memory tab take heap snapshots and do a comparison between times before you took an action
+```
+
+## Error Boundaries:
+ ```
+ Error Boundaries basically provide some sort of boundaries or checks on errors, 
+ They are React components that are used to handle JavaScript errors in their child component tree.
+ ```
+ 
+ ## Pure Function:
+ ```
+ A React component is considered pure if it renders the same output for the same state and props. 
+ For this type of class component, React provides the PureComponent base class.
+```
+- Its return value is only determined by its input values
+- Its return value is always the same for the same input values
+
+## Code:
+```
+import React from 'react';
+
+class PercentageStat extends React.PureComponent {
+
+  render() {
+    const { label, score = 0, total = Math.max(1, score) } = this.props;
+
+    return (
+      <div>
+        <h6>{ label }</h6>
+        <span>{ Math.round(score / total * 100) }%</span>
+      </div>
+    )
+  }
+
+}
+
+export default PercentageStat;
+```
+
+## HOC component:
+```
+Higher-order components or HOC is the advanced method of reusing the component functionality logic. 
+It simply takes the original component and returns the enhanced component.
+```
+
+## Syntax:
+`const EnhancedComponent = higherOrderComponent(OriginalComponent);`
+
+## Reason to use Higher-Order component:
+
+- Easy to handle
+- Get rid of copying the same logic in every component
+- Makes code more readable
+
+## Parent Component 
+```
+import React from 'react'
+import "./App.css"
+// importing HighOrder file
+import EnhancedComponent from './HighOrder'
+
+class App extends React.Component {
+render() {
+	// Destructuring the props
+	const { show, handleclick } = this.props
+
+	// Calling out the props
+	return <button onClick={handleclick}>{show}
+	</button>
+}
+}
+
+
+export default EnhancedComponent(App);
+
+```
+
+## Child Component 
+```
+import React from 'react'
+
+const EnhancedComponent = (OriginalComponent) => {
+	class NewComponent extends React.Component {
+
+		constructor(props) {
+			super(props);
+			// Set initial count to be 0
+			this.state = { count: 0 };
+		}
+
+		handleClick = () => {
+			// Incrementing the count
+			this.setState({ count: this.state.count + 1 });
+		}
+
+		render() {
+
+			// passed a handleclick and count in the originalComponent
+			// as a props for calling and adding the functionality
+			return <OriginalComponent
+				handleclick={this.handleClick}
+				show={this.state.count} />
+		}
+	}
+	// Returns the new component
+	return NewComponent
+}
+// Export main Component
+export default EnhancedComponent
+
+```
+## Output:
+<img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210310121357/20210310_121315.gif" />
+
+
+# API (Application Programming Interface)
+
+```
+API is an abbreviation for Application Programming Interface which is a collection of communication protocols and subroutines 
+used by various programs to communicate between them.
+A programmer can make use of various API tools to make its program easier and simpler. 
+Also, an API facilitates the programmers with an efficient way to develop their software programs.
+```
+
+## How we fetch the data from API 
+
+## Using Fetch Method:
+
+```
+import React from "react";
+import './App.css';
+class App extends React.Component {
+
+	// Constructor
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			items: [],
+			DataisLoaded: false
+		};
+	}
+
+	// ComponentDidMount is used to
+	// execute the code
+	componentDidMount() {
+		fetch(
+"https://jsonplaceholder.typicode.com/users")
+			.then((res) => res.json())
+			.then((json) => {
+				this.setState({
+					items: json,
+					DataisLoaded: true
+				});
+			})
+	}
+	render() {
+		const { DataisLoaded, items } = this.state;
+		if (!DataisLoaded) return <div>
+			<h1> Pleses wait some time.... </h1> </div> ;
+
+		return (
+		<div className = "App">
+			<h1> Fetch data from an api in react </h1> {
+				items.map((item) => (
+				<ol key = { item.id } >
+					User_Name: { item.username },
+					Full_Name: { item.name },
+					User_Email: { item.email }
+					</ol>
+				))
+			}
+		</div>
+	);
+}
+}
+
+export default App;
+```
+
+## Output:
+
+<img src="https://media.geeksforgeeks.org/wp-content/uploads/20210817165343/out.gif" />
+
+# Using Axios
+```
+Use npm i axios to install axios and then add it as an import to your parent component. 
+I’m going to use axios to get all of my notes, which I stored in a database.
+```
+## Output:
+
+<img src="https://levelup.gitconnected.com/fetch-api-data-with-axios-and-display-it-in-a-react-app-with-hooks-3f9c8fa89e7b" />
+
+## Fetch API using async/await:
+
+```
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
+
+function App() {
+
+	const [loading, setLoading] = useState(false);
+	const [posts, setPosts] = useState([]);
+
+	useEffect(() => {
+		const loadPost = async () => {
+
+			// Till the data is fetch using API
+			// the Loading page will show.
+			setLoading(true);
+
+			// Await make wait until that
+			// promise settles and return its result
+			const response = await axios.get(
+			"https://jsonplaceholder.typicode.com/posts/");
+
+			// After fetching data stored it in posts state.
+			setPosts(response.data);
+
+			// Closed the loading page
+			setLoading(false);
+		}
+
+		// Call the function
+		loadPost();
+	}, []);
+
+	return (
+		<>
+			<div className="App">
+				{loading ? (
+					<h4>Loading...</h4>) :
+					(posts.map((item) =>
+						// Presently we only fetch
+						// title from the API
+						<h4>{item.title}</h4>)
+					)
+				}
+			</div>
+		</>
+	);
+}
+
+export default App;
+
+```
+
+## Output:
+
+<img src="https://www.geeksforgeeks.org/how-to-fetch-data-from-apis-using-asynchronous-await-in-reactjs/" />
+
+
+
+# REDUX
+
+## What is Redux??
+```
+Redux is an open-source JavaScript library used to manage application state. 
+React uses Redux for building the user interface. 
+It was first introduced by **Dan Abramov and Andrew Clark** in 2015.
+It allows React components to read data from a Redux Store, and dispatch Actions to the Store to update data.
+Redux helps apps to scale by providing a sensible way to manage state through a unidirectional data flow model.
+React Redux is conceptually simple. It subscribes to the Redux store, checks to see if the data which your component wants have changed, and re-renders your component.
+```
+
+## Redux Architecture:
+
+<img src = "https://static.javatpoint.com/tutorial/reactjs/images/react-redux-architecture.png" />
+  
+1. Store:  
+```
+A Store is a place where the entire state of your application lists. 
+It manages the status of the application and has a dispatch(action) function.
+It is like a brain responsible for all moving parts in Redux.
+```
+2. ACTION:
+```
+Action is sent or dispatched from the view which are payloads that can be read by Reducers. 
+It is a pure object created to store the information of the user's event. 
+It includes information such as type of action, time of occurrence, location of occurrence, its coordinates, and which state it aims to change.
+```
+3. REDUCER:
+```
+Reducer read the payloads from the actions and then updates the store via the state accordingly. 
+It is a pure function to return a new state from the initial state.
+```
+
+### Redux Installation:
+`$ npm install redux react-redux --save  `
+
+## Redux Toolkit:
+```
+Redux Toolkit makes it easier to write good Redux applications and speeds up development, by baking in our recommended best practices, 
+providing good default behaviors, catching mistakes, and allowing you to write simpler code. 
+  
+Redux Toolkit is beneficial to all Redux users regardless of skill level or experience
+```
+### it helps to solve three major problems people had with Redux:
+
+1. “Configuring a Redux store is too complicated”
+2. “I have to add a lot of packages to get Redux to do anything useful”
+3. “Redux requires too much boilerplate code”
+
+## Installing Module:
+
+`  npm install @reduxjs/toolkit  `
+
+# Step-1:
+## Store Creation:
+```
+Create a file called store.js by using the configureStore method from the redux toolkit package, 
+pass in the list reducer’s required for the application to initialize a store.
+```
+## Code:
+
+```
+import { configureStore } from '@reduxjs/toolkit'
+  
+export const store = configureStore({
+    reducer: {},
+})
+```
+
+# Step-2:
+### Providing Store to React application: 
+```
+Once the store is created, we can provide the store to the react app using the Provider method from the react-redux package.
+```
+### Code:
+```
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import App from './App';
+import { store } from './store.js';
+  
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root'),
+);
+```
+# Step-3:
+### Creating A Redux Slice: 
+
+```
+Create a slice.js file. In Redux Toolkit, we create a reducer using createSlice API from the redux toolkit package. 
+It simplifies the creation of actions and the complex switch cases of a reducer into a few lines of code by internally using them.
+```
+### Code:
+```
+import { createSlice } from '@reduxjs/toolkit';
+  
+const initialState = {
+  name: [],
+  food: [],
+};
+  
+const customerSlice = createSlice({
+  
+  // An unique name of a slice
+  name: 'customer',
+  
+  // Initial state value of the reducer
+  initialState,
+  
+  // Reducer methods
+  reducers: {
+    addCustomer: (state, { payload }) => {
+      state.name.push(payload);
+    },
+  
+    orderFood: (state, { payload }) => {
+      state.food.push(payload);
+    },
+  },
+});
+  
+// Action creators for each reducer method
+export const { addCustomer, orderFood }
+            = customerSlice.actions;
+              
+export default customerSlice.reducer;
+```
+
+```
+Even though the above code, we use to push it doesn’t mutate the state value, since Redux toolkit uses immer library internally to update the state immutably.
+
+Now, we import the reducer into the store.js file we created earlier. By defining a field inside the reducer parameter, we tell the store to use this slice reducer function to handle all updates to that state.
+```
+
+### Store.js
+```
+import { configureStore } from '@reduxjs/toolkit';
+import reducer from './slice.js';
+  
+export default configureStore({
+  reducer: {
+    customers: reducer,
+  },
+});
+```
+
+## Using Redux state and actions in Components: 
+```
+We can use the react-redux hooks (useSelectore and useDispatch) to read the redux store values and dispatch actions to the reducers.
+```
+
+## Code:
+```
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { orderFood } from './slice.js';
+  
+function CustomerCard({ name }) {
+  const [orders, setOrders] = useState('');
+  
+  // Using useSelector hook we obtain the redux store value
+  const food = useSelector((state) => state.customers.food);
+  
+  const dispatch = useDispatch();
+  
+  // Using the useDispatch hook to send payload back to redux
+  const addOrder = () => dispatch(orderFood(orders));
+  
+  return (
+    <div>
+      <div className="customer-food-card-container">
+        <p>{name}</p>
+  
+        <div className="customer-foods-container">
+          {food.map((foo) => (
+            <div className="customer-food">{foo}</div>
+          ))}
+  
+          <div className="customer-food-input-container">
+            <input value={orders} onChange={(event) => 
+              setOrders(event.target.value)} />
+  
+            <button onClick={addOrder}>Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+  
+export default CustomerCard;
+```
+
+# Redux Thunk:
+
+#### What is Redux Thunk??
+```
+Thunk is a logical concept in programming where you deal with a function that is primarily used to delay the calculation or evaluation of any operation.
+
+Redux Thunk acts as a middleware that will return you a function instead of an object while calling through the action creators.
+```
+
+## Installation:
+`  $ npm install redux thunk@2.3.0    `
+
+
+### Code:
+```
+import { connect } from 'react-redux';  
+import { addTodo } from '../actions';  
+Import NewTickTackToe from '../components/NewTickTackToe';   // Another Component 
+  
+const DispatchToProps = dispatch => {  
+  return {  
+    onAddTickTackToe: ticktacktoe => {  
+      dispatch(addTickTackToe(ticktacktoe));  
+    }  
+  };  
+};  
+  
+export default connect(  
+  null,  
+  DispatchToProps  
+)  
+(NewTickTackToe);  
+```
+
+```
+const INCREMENT_COUNTER = 'INCREMENT_COUNTER';  
+  
+function increment() {  
+  return {  
+    type: INCREMENT_COUNTER  
+  };  
+}  
+  
+function incrementAsync() {  
+  return dispatch => {  
+    setTimeout(() => {  
+      
+      dispatch(increment());  
+    }, 1000);  
+  };  
+}  
+```
+
+### Note: The dispatch action can be used along with the increment function defined above along with time constraints. We have taken 1000 milliseconds as the default time interval. Also, the dispatch function is invoked using sync or async actions.
+
+## Redux Saga:
+
+```
+Redux Saga is a middleware library used to allow a Redux store to interact with resources outside of itself asynchronously. 
+This includes making HTTP requests to external services, accessing browser storage, and executing I/O operations. 
+These operations are also known as side effects. Redux Saga helps to organize these side effects in a way that is easier to manage.
+  
+Redux-Saga is a library primarily aimed to make application side effects like asynchronous data fetching and accessing impure browser cache. 
+It is very easy to manage and efficient to execute. With Redux-Saga, it is easy to test and handle failure effortlessly.
+```
+
+## Redux vs Context API:
+
+<img src="https://cdn-blog.scalablepath.com/uploads/2022/08/comparison-context-api-vs-redux.webp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
