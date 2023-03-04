@@ -94,6 +94,72 @@ Search Engine Optimization (SEO) is the process of optimizing your website in or
 | It cannot use Hooks. | Function Component uses Hooks, Using Hooks we can make out state as **Stateful component** . |
 | Class Component used constructor to pass props. | Function Component doesn't need it.  |
 
+#### Example of Class Component:
+
+```
+import React, { Component } from 'react';
+
+class MyComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+  }
+
+  handleClick = () => {
+    this.setState(prevState => ({
+      count: prevState.count + 1
+    }));
+  }
+
+  render() {
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.handleClick}>Click me</button>
+      </div>
+    );
+  }
+}
+
+```
+
+- Summary of code:
+```
+In this example, MyComponent is a class that extends the Component class from the React library. It has a constructor that sets the initial state of the component, which includes a count property that starts at 0. It also has a handleClick method that updates the component's state when the button is clicked, and a render method that returns the component's HTML markup.
+
+When the button is clicked, the handleClick method is called, which updates the state of the component by incrementing the count property. This causes the component to re-render, which updates the displayed count value.
+```
+#### Example of Function Component:
+
+```
+import React, { useState } from 'react';
+
+function MyComponent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleClick}>Click me</button>
+    </div>
+  );
+}
+
+```
+- Summary of code:
+
+```
+In this example, MyComponent is a function that returns the component's HTML markup. It uses the useState hook from React to create a state variable called count and a function to update it called setCount. The initial value of count is set to 0.
+
+When the button is clicked, the handleClick function is called, which updates the count state variable by calling setCount. This causes the component to re-render, which updates the displayed count value.
+```
+
 ## State vs Props
 
 | State | Props |
@@ -104,6 +170,82 @@ Search Engine Optimization (SEO) is the process of optimizing your website in or
 | State cannot be accepted by **child component** . | Props can be accessed by the **child component** .|
 | State can be used for rendering dynamic changes with the components. | Props are used to communicate between two components. |
 | State cannot make components reusable. | Props can make components to re-usable. |
+
+#### Example of State:
+
+```
+import React, { useState } from 'react';      		// This line imports the React library and the useState hook from the react package.
+
+function MyComponent() {			        // This line defines a new function component called MyComponent.
+  const [count, setCount] = useState(0);	        // This line declares a new state variable called count using the useState hook. It initializes count to 0 and 							       // sets setCount as the function to update count.	
+
+  const handleClick = () => {				// This line declares a new function called handleClick that updates the count state variable by callin   	setCount(count + 1);				  // setCount and passing in the current value of count plus 1.
+ 
+  }
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={handleClick}>Click me</button>
+    </div>
+  );
+}
+
+```
+
+- Summary of code:
+```
+In this example, the useState hook is used to create a state variable called count and a function to update it called setCount. The initial value of count is set to 0.
+
+When the button is clicked, the handleClick function is called, which updates the count state variable by calling setCount. This causes the component to re-render, which updates the displayed count value.
+```
+
+#### Example of Props:
+
+Child Component 
+```
+import React from 'react';
+
+function Greeting(props) {    // This line defines a new function component called Greeting that takes in a single props argument.
+  return (
+    <div>
+      <h1>Hello, {props.name}!</h1>
+      <p>You are {props.age} years old.</p>
+    </div>
+  );
+}
+
+export default Greeting;
+
+```
+
+Parent Component 
+```
+import React from 'react';
+import Greeting from './Greeting';
+
+function App() {
+  return (
+    <div>
+      <Greeting name="Alice" age={25} />
+      <Greeting name="Bob" age={30} />
+    </div>
+  );
+}
+
+export default App;
+```
+
+- Summary of code:
+```
+In this example, the Greeting component takes in two props: name and age. These props are passed in as arguments to the component function via the props object.
+
+The component uses the props to display a personalized greeting with the person's name and age. The name prop is used inside an <h1> tag, while the age prop is used inside a <p> tag.
+
+To use this component elsewhere in the application, it would be imported and rendered with the desired props:
+
+```
+
 
 ## Pass Props Parent to Child Component 
 
