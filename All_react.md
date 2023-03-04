@@ -377,6 +377,8 @@ The componentWillUnmount lifecycle method is invoked immediately before a compon
 ```
 ![Screenshot 2023-02-26 235509](https://user-images.githubusercontent.com/94469107/221429265-2002acb7-5790-4485-a4f2-a5149e6c7c43.png)
 
+### Day-3
+
 # Hooks
 
 ### What is Props-Drilling?
@@ -794,6 +796,8 @@ export default App;
 
 ```
 
+## Day-4
+
 ## Stylig with Material UI
 - Material UI is an open-source React component library that implements Google's Material Design. 
 - It includes a comprehensive collection of prebuilt components that are ready for use in production right out of the box.
@@ -1135,6 +1139,8 @@ export default function App() {
 }
 ```
 
+## Day-5
+
 # React Router
 
 - React Router is a JavaScript framework that lets us handle client and server-side routing in React applications. 
@@ -1247,6 +1253,7 @@ function Users() {
   );
 }
 ```
+## Day-6
 
 ## Lazy Loading :
 
@@ -1501,6 +1508,7 @@ export default EnhancedComponent
 ## Output:
 <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210310121357/20210310_121315.gif" />
 
+## Day-7
 
 # API (Application Programming Interface)
 
@@ -1639,6 +1647,7 @@ export default App;
 <img src="https://www.geeksforgeeks.org/how-to-fetch-data-from-apis-using-asynchronous-await-in-reactjs/" />
 
 
+## Day-8
 
 # REDUX
 
