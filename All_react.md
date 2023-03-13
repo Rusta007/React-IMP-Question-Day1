@@ -709,6 +709,58 @@ export default App;
 
 ```
 
+## useState vs useReducer
+
+- useState and useReducer are both hooks in React that allow you to manage state within your components. However, there are a few key differences between them:
+
+- **State management**: useState manages state in a single value or object, while useReducer manages state with a more complex data structure.
+
+- **Complex state updates**: useState is suitable for managing simple state updates, such as toggling a boolean or updating a single value. useReducer is better for managing complex state updates that involve multiple values and may require conditional logic.
+
+- **Performance** : useReducer may be more performant in certain cases, especially when the state updates are complex and involve many values. This is because useReducer allows you to dispatch an action that triggers a state update, which can be more efficient than updating state directly with useState.
+
+- **Predictability** : useReducer promotes predictability in state updates by following a strict pattern of taking in a previous state and an action to update that state. This can make it easier to understand how state is being updated and debug issues.
+
+- **Debugging**: useReducer can be easier to debug since state updates are triggered by dispatching an action, which can be logged and traced.
+
+```
+In summary, useState is a simpler and more straightforward way of managing state, while useReducer is better for managing complex state updates that require more conditional logic and may be more performant in certain cases.
+```
+
+## useMemo vs useCallback
+
+- useMemo and useCallback are both hooks in React that allow you to optimize the performance of your application by memoizing values or functions.
+
+- useMemo is used to memoize a value that is expensive to compute, so that it is only computed when necessary. 
+- It takes two arguments: a function that computes the 	value, and an array of dependencies. 
+- The value returned by the function is memoized and only recomputed when the dependencies change. 
+
+#### Here's an example:
+
+```
+const memoizedValue = useMemo(() => {
+  return someExpensiveComputation(a, b);
+}, [a, b]);
+
+- In this example, someExpensiveComputation is only called when a or b change.
+```
+
+- useCallback is used to memoize a function, so that it is only recreated when necessary. 
+- It takes two arguments: a function and an array of dependencies. 
+- The function returned by useCallback is memoized and only recreated when the dependencies change.
+
+```
+const memoizedFunction = useCallback(() => {
+  doSomethingWith(a, b);
+}, [a, b]);
+
+- In this example, memoizedFunction is only recreated when a or b change.
+```
+
+The main difference between useMemo and useCallback is what they memoize. useMemo memoizes a value, while useCallback memoizes a function. In general, you should use useMemo when you want to memoize a value, and useCallback when you want to memoize a function.
+
+However, there are cases where you might want to use useCallback to memoize a value, or useMemo to memoize a function. For example, if you have a function that returns a new function every time it is called, you might want to memoize the returned function with useCallback. Or, if you have a value that is expensive to compute and also used as a function, you might want to memoize it with useMemo.
+
 ## Day-4
 
 ## Stylig with Material UI
