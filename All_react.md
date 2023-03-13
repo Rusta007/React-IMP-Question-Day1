@@ -96,34 +96,7 @@ Search Engine Optimization (SEO) is the process of optimizing your website in or
 
 #### Example of Class Component:
 
-```
-import React, { Component } from 'react';
-
-class MyComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 0
-    };
-  }
-
-  handleClick = () => {
-    this.setState(prevState => ({
-      count: prevState.count + 1
-    }));
-  }
-
-  render() {
-    return (
-      <div>
-        <p>Count: {this.state.count}</p>
-        <button onClick={this.handleClick}>Click me</button>
-      </div>
-    );
-  }
-}
-
-```
+![Screenshot 2023-03-13 155111](https://user-images.githubusercontent.com/94469107/224685210-f9f50c4a-38b3-4a80-8a35-597fcaa4206e.png)
 
 - Summary of code:
 ```
@@ -133,25 +106,8 @@ When the button is clicked, the handleClick method is called, which updates the 
 ```
 #### Example of Function Component:
 
-```
-import React, { useState } from 'react';
+![Screenshot 2023-03-13 160222](https://user-images.githubusercontent.com/94469107/224685305-fc7e105f-2bd3-4cbd-aaaa-a5797ab3ae3e.png)
 
-function MyComponent() {
-  const [count, setCount] = useState(0);
-
-  const handleClick = () => {
-    setCount(count + 1);
-  }
-
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={handleClick}>Click me</button>
-    </div>
-  );
-}
-
-```
 - Summary of code:
 
 ```
