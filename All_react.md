@@ -782,327 +782,394 @@ However, there are cases where you might want to use useCallback to memoize a va
 
 ## useState + Form
 
-![Screenshot 2023-03-01 133901](https://user-images.githubusercontent.com/94469107/222080967-9230c539-953f-47b7-a875-e0e8dafa1ae7.png)
+```
+import React, { useState } from 'react';
+
+const MyFormm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(`Name: ${name}, Email: ${email}, Message: ${message}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea value={message} onChange={(event) => setMessage(event.target.value)} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default MyFormm;
+
+```
+### Summary of code:
+
+In this example, useState is used to create state variables for the name, email, and message inputs in the form. The value prop of each input is set to the corresponding state variable, and the onChange prop is set to a function that updates the state variable with the new value of the input.
+
+The handleSubmit function is called when the form is submitted, and logs the values of the state variables to the console. You can modify this function to handle the form data in your own application.
 
 ## useEffect + Form
 
-![Screenshot 2023-03-01 134614](https://user-images.githubusercontent.com/94469107/222082455-575324f8-17fd-46cd-bb5c-b3096dae5629.png)
+```
+import React, { useState, useEffect } from 'react';
+
+const MyFormmm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // Load initial data for the form here
+    // For example, you could fetch the data from an API and set the state variables
+  }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(`Name: ${name}, Email: ${email}, Message: ${message}`);
+    // Reset form here
+    setName('');
+    setEmail('');
+    setMessage('');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea value={message} onChange={(event) => setMessage(event.target.value)} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default MyFormmm;
+```
+### Summary of code:
+
+In this example, useEffect is used to load initial data for the form. The useEffect hook takes two arguments: a function that will run when the component mounts, and an array of dependencies that determines when the effect should run. In this case, the dependencies array is empty, so the effect will only run once when the component mounts.
+
+The handleSubmit function is called when the form is submitted, and logs the values of the state variables to the console. You can modify this function to handle the form data in your own application. In this example, the form is reset by setting the state variables back to their initial empty values after the form is submitted.
+
 
 ## useContext + Form
 
 ```
-const MyContext = React.createContext();
+import React, { useState, useContext } from 'react';
+import MyContext from './MyContext';
 
+const UseContextForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const { submitForm } = useContext(MyContext);
 
-const useMyContext = (section, init) => {
-  // context and setContext came from MyContext.Provider
- 
- const { context, setContext } = React.useContext(MyContext)
-  const data = (context[section] === undefined) ? init : context[section]
-  const setData = (data) => setContext({...context, [section]: data})
-  return [data, setData]
-}
-
-// data and actions provider
-const useNameForm = () => {
-  const init = {
-    values: {
-      name: '',
-      surname: '',
-    },
-    errors: []
-  }
-  const [data, setData] = useMyContext('formName', init)
-  const changeValue = (input, value) => {
-    setData({...data, values: {...data.values, [input]: value}})
-  }
-  const setErrors = errors => {
-    setData({...data, errors})
-  }
-  return {data, changeValue, setErrors}
-}
-
-const Content = (props) => {
-  const {data, changeValue, setErrors} = useNameForm()
-
-  const handleChange = (event) => {
-    changeValue(event.target.name, event.target.value);
-  }
-  
-  const validate = (values) => {
-    const errors = []
-    !values.name && errors.push("Name is required")
-    !values.surname && errors.push("surname is required")
-    setErrors(errors)
-    return errors.length === 0
-  }
-  
   const handleSubmit = (event) => {
-    if(validate(data.values)){
-      alert('form submited: ' + JSON.stringify(data.values))
-    }
     event.preventDefault();
-  }
-  
+    console.log(`Name: ${name}, Email: ${email}, Message: ${message}`);
+    // Pass form data to context here
+    submitForm(name, email, message);
+    // Reset form here
+    setName('');
+    setEmail('');
+    setMessage('');
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <label>Name: <input type="text" value={data.values.name}
-                     name="name" onChange={handleChange} /></label><br />
-      <label>Surname: <input type="text" value={data.values.surname} 
-                        name="surname" onChange={handleChange} /></label>
-      <input type="submit" value="Submit" />
-      {data.errors.length > 0 && data.errors.map((err,i) => (
-        <p key={i}>{err}</p>
-      ))}
+      <label>
+        Name:
+        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea value={message} onChange={(event) => setMessage(event.target.value)} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
     </form>
   );
-}
+};
 
-const DeepComponent = () => {
-  const { data } = useNameForm('formName')
-  return <div><br />DeepComponent:
-              <br />name: {data.values.name}
-              <br />surname: {data.values.surname}</div>
-}
-
-const App = (props) => {
-  const [data, setData] = React.useState({})
-  return (
-    <MyContext.Provider value={{
-        context: data,
-        setContext: newData => setData(newData)
-      }}>
-      <Content />
-      <DeepComponent />
-    </MyContext.Provider>
-  )
-}
-
-ReactDOM.render(
-  <App />,
-  document.getElementById('root')
-);
+export default UseContextForm;
 ```
+
+### Summary of code:
+
+In this example, useContext is used to access a submitForm function from a context object. The context object is created using the createContext function and exported as MyContext from a separate file. The submitForm function can be defined in the same file as the context object, and it should handle the form data in your own application.
+
+The handleSubmit function is called when the form is submitted, and logs the values of the state variables to the console. The form data is then passed to the submitForm function from the context object. In this example, the form is reset by setting the state variables back to their initial empty values after the form is submitted.
 
 ## useReducer + Form
 
 ```
-import { useReducer } from "react"
+import React, { useReducer } from 'react';
 
-type FormState = {
-    firstName: string
-    lastName: string
-    age: string
-    email: string
-    password: string
-}
-const initialState: FormState = {
-    firstName: "",
-    lastName: "",
-    age: "",
-    email: "",
-    password: ""
-}
-type FormValidityState = {
-    firstNameError: boolean
-    lastNameError: boolean
-    ageError: boolean
-    emailError: boolean
-    passwordError: boolean
-    isFormValid: boolean
-}
-const initialValidityState: FormValidityState = {
-    firstNameError: false,
-    lastNameError: false,
-    ageError: false,
-    emailError: false,
-    passwordError: false,
-    isFormValid: false
-}
-type FormAction = {
-    type: string
-    payLoad: string
-}
-type FormValidityAction = {
-    type: string
-    payLoad: FormState
-}
-const formReducer = (state: FormState, action: FormAction): FormState => {
-    switch(action.type){
-        case "UPDATE_FIRST_NAME": return{
-            ...state, firstName: action.payLoad, 
-        }
-        case "UPDATE_LAST_NAME": return{
-            ...state,lastName: action.payLoad, 
-        }
-        case "UPDATE_AGE": return{
-            ...state, age: action.payLoad, 
-        }
-        case "UPDATE_EMAIL": return{
-            ...state, email: action.payLoad, 
-        }
-        case "UPDATE_PASSWORD": return{
-            ...state, password: action.payLoad, 
-        }
-        default:
-            return state
-    }
-}
-const formValidityReducer = (state: FormValidityState, action: FormValidityAction): FormValidityState => {
-    let isValid: boolean = false;
-    switch(action.type){
-        
-        case "VALIDATE_FIRST_NAME": 
-        isValid = action.payLoad.firstName.length > 0 ? true: false
-        return{
-            ...state,
-            ...({firstNameError: !isValid, isFormValid: isValid && !state.lastNameError && !state.ageError && !state.emailError && !state.passwordError}),
-        }
-        case "VALIDATE_LAST_NAME": 
-        isValid = action.payLoad.lastName.length > 0 ? true: false
-        return{
-            ...state,
-            ...({lastNameError: !isValid, isFormValid: isValid && !state.firstNameError && !state.ageError && !state.emailError && !state.passwordError})
-        }
-        case "VALIDATE_AGE": 
-        isValid = action.payLoad.age.length > 0 ? true: false
-        return{
-            ...state,
-            ...({ageError: !isValid, isFormValid: isValid && !state.firstNameError && !state.lastNameError && !state.emailError && !state.passwordError})
-        }
-        case "VALIDATE_EMAIL": 
-        isValid = (action.payLoad.email.length > 0 && action.payLoad.email.includes("@")) ? true: false
-        return{
-            ...state,
-            ...({emailError: !isValid, isFormValid: isValid && !state.firstNameError && !state.lastNameError && !state.ageError && !state.passwordError})
-        }
-        case "VALIDATE_PASSWORD": 
-        isValid = action.payLoad.password.length > 9 ? true: false
-        return{
-            ...state,
-            ...({passwordError: !isValid, isFormValid: isValid && !state.firstNameError && !state.lastNameError && !state.ageError && !state.emailError})
-        }
+const initialState = {
+  name: '',
+  email: '',
+  message: '',
+};
+
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case 'updateName':
+      return { ...state, name: action.payload };
+    case 'updateEmail':
+      return { ...state, email: action.payload };
+    case 'updateMessage':
+      return { ...state, message: action.payload };
+    case 'reset':
+      return initialState;
     default:
-        return state
-    }
-}
+      return state;
+  }
+};
 
-export const Form = () => {
-    const [formData, setFormData] = useReducer(formReducer, initialState)
-    const [formValidityData, setFormValidityData] = useReducer(formValidityReducer, initialValidityState)
+const UseReducer = () => {
+  const [state, dispatch] = useReducer(formReducer, initialState);
 
-    const onButtonPress = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        console.log(formData)
-        //Form submission happens here
-    }
-    return(
-        <div style={STYLE.container}>
-        <form onSubmit={onButtonPress}>
-            <label style={STYLE.formElement} htmlFor="first_name">First Name</label>
-            <div style={STYLE.formElement}>
-                <input 
-                id="first_name" 
-                style={{backgroundColor:formValidityData.firstNameError ?"pink" : ""}} 
-                onChange={(e) =>setFormData({type:"UPDATE_FIRST_NAME", payLoad:e.target.value})}
-                onBlur={(e) => setFormValidityData({type: "VALIDATE_FIRST_NAME", payLoad: formData})}
-                type="text"/>
-            </div>
-           <label style={STYLE.formElement} htmlFor="last_name">Last Name</label>
-            <div style={STYLE.formElement}>
-                <input 
-                id="last_name" 
-                style={{backgroundColor:formValidityData.lastNameError ? "pink" : ""}} 
-                onChange={(e) =>setFormData({type:"UPDATE_LAST_NAME", payLoad:e.target.value})}
-                onBlur={(e) => setFormValidityData({type: "VALIDATE_LAST_NAME", payLoad: formData})}
-                type="text"/>
-            </div>
-            <label style={STYLE.formElement} htmlFor="last_name">Email</label>
-            <div style={STYLE.formElement}>
-                <input 
-                id="email" 
-                style={{backgroundColor:formValidityData.emailError ? "pink" : ""}} 
-                onChange={(e) =>setFormData({type:"UPDATE_EMAIL", payLoad:e.target.value})}
-                onBlur={(e) => setFormValidityData({type: "VALIDATE_EMAIL", payLoad: formData})}
-                type="text"/>
-            </div>
-            <label style={STYLE.formElement} htmlFor="last_name">Password</label>
-            <div style={STYLE.formElement}>
-                <input 
-                id="password" 
-                style={{backgroundColor:formValidityData.passwordError ? "pink" : ""}} 
-                onChange={(e) =>setFormData({type:"UPDATE_PASSWORD", payLoad:e.target.value})}
-                onBlur={(e) => setFormValidityData({type: "VALIDATE_PASSWORD", payLoad: formData})}
-                type="password"/>
-            </div>
-           <label style={STYLE.formElement} htmlFor="age">Age</label>
-            <div style={STYLE.formElement}>
-                <input 
-                id="age" 
-                style={{backgroundColor:formValidityData.ageError ? "pink" : ""}} 
-                onChange={(e) =>setFormData({type:"UPDATE_AGE", payLoad:e.target.value})} 
-                onBlur={(e) => setFormValidityData({type: "VALIDATE_AGE", payLoad: formData})}
-                type="number"/>
-            </div>
-            <div style={STYLE.formElement}>
-                <input disabled={!formValidityData.isFormValid} type="submit" value={""+formValidityData.isFormValid}/>
-            </div>
-        </form>
-        </div>
-    )
-}
-const STYLE = {
-    container: {
-        borderRadius: "5px",
-        backgroundColor: "#f2f2f2",
-        padding: "20px",
-        maxWidth:"240px"
-    },
-    formElement: {
-        padding: "6px 24px"
-    }
-}
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(`Name: ${state.name}, Email: ${state.email}, Message: ${state.message}`);
+    // Reset form here
+    dispatch({ type: 'reset' });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={state.name} onChange={(event) => dispatch({ type: 'updateName', payload: event.target.value })} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" value={state.email} onChange={(event) => dispatch({ type: 'updateEmail', payload: event.target.value })} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea value={state.message} onChange={(event) => dispatch({ type: 'updateMessage', payload: event.target.value })} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default UseReducer;
 ```
+
+### Summary of code: 
+
+ In this example, useReducer is used to manage the state of the form. The initial state is defined as an object with name, email, and message properties. A formReducer function is defined to handle state updates based on different actions.
+
+ The handleSubmit function is called when the form is submitted, and logs the values of the state variables to the console. The form is reset by dispatching a reset action to the reducer.
+
+ The form input fields are rendered using the current state of the form, and the dispatch function is used to update the state based on user input. The dispatch function takes an action object with a type property that corresponds to a specific case in the formReducer function, and a payload property that contains the new value for the corresponding form field.
+
 
 ## useRef + Form
 
 ```
-import React, { useRef } from "react"
+import React, { useRef } from 'react';
 
-export default function App() {
-  const nameRef = useRef();
-  const emailRef = useRef()
-  const passwordRef = useRef()
+const MyForm = () => {
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const messageRef = useRef(null);
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    //output the name
-    console.log(nameRef.current.value)
-    //output the email
-    console.log(emailRef.current.value)
-  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(`Name: ${nameRef.current.value}, Email: ${emailRef.current.value}, Message: ${messageRef.current.value}`);
+    // Reset form here
+    nameRef.current.value = '';
+    emailRef.current.value = '';
+    messageRef.current.value = '';
+  };
 
   return (
-    <div className="container">
-      <form onSubmit={handleSubmit}>
-        <div className="input_group">
-          <label>Name</label>
-          <input type="text" ref={nameRef}/>
-        </div>
-        <div className="input_group">
-          <label>Email</label>
-          <input type="text" ref={emailRef}/>
-        </div>
-        <div className="input_group">
-          <label>Password</label>
-          <input type="password" ref={passwordRef}/>
-        </div>
-        <input type="submit"/>
-      </form>
-    </div>
-  )
-}
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" ref={nameRef} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" ref={emailRef} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea ref={messageRef} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default MyForm;
+
 ```
+
+### Summary of code:
+
+In this example, useRef is used to create a reference to each form input field. The nameRef, emailRef, and messageRef variables are created using the useRef hook, and assigned to the ref attribute of their respective input fields.
+
+The handleSubmit function is called when the form is submitted, and logs the values of the form input fields to the console. The form is reset by setting the value property of each input field to an empty string.
+
+Using useRef in this way allows you to access the current value of a form input field without the need to manage state for each field. This can be especially useful for larger forms with many input fields.
+
+## useMemo + Form
+
+```
+import React, { useState, useMemo } from 'react';
+
+const MyForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(`Name: ${name}, Email: ${email}, Message: ${message}`);
+    // Reset form here
+    setName('');
+    setEmail('');
+    setMessage('');
+  };
+
+  const disabled = useMemo(() => {
+    return !name || !email || !message;
+  }, [name, email, message]);
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea value={message} onChange={(event) => setMessage(event.target.value)} />
+      </label>
+      <br />
+      <button type="submit" disabled={disabled}>Submit</button>
+    </form>
+  );
+};
+
+export default MyForm;
+
+```
+
+### Summary of code:
+
+In this example, useMemo is used to calculate the value of the disabled variable based on the current values of name, email, and message. The useMemo hook takes a function that returns the computed value, and an array of dependencies that trigger the recalculation of the computed value when they change.
+
+The handleSubmit function is called when the form is submitted, and logs the values of the name, email, and message state variables to the console. The form is reset by setting the name, email, and message state variables to empty strings.
+
+The form input fields are rendered using the current values of the name, email, and message state variables, and the setName, setEmail, and setMessage functions are used to update the state variables based on user input.
+
+Using useMemo in this way allows you to calculate a value based on the current state of the form without triggering unnecessary re-renders. This can be especially useful for complex calculations or for optimizing performance in larger forms.
+
+## useCallback + Form
+
+```
+import React, { useState, useCallback } from 'react';
+
+const MyForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = useCallback((event) => {
+    event.preventDefault();
+    console.log(`Name: ${name}, Email: ${email}, Message: ${message}`);
+    // Reset form here
+    setName('');
+    setEmail('');
+    setMessage('');
+  }, [name, email, message]);
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Email:
+        <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <textarea value={message} onChange={(event) => setMessage(event.target.value)} />
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default MyForm;
+
+```
+
+In this example, useCallback is used to create a memoized version of the handleSubmit function. The useCallback hook takes a function and an array of dependencies, and returns a memoized version of the function that only changes when one of the dependencies changes.
+
+The handleSubmit function is called when the form is submitted, and logs the values of the name, email, and message state variables to the console. The form is reset by setting the name, email, and message state variables to empty strings.
+
+The form input fields are rendered using the current values of the name, email, and message state variables, and the setName, setEmail, and setMessage functions are used to update the state variables based on user input.
+
+Using useCallback in this way allows you to create a memoized version of a function that depends on state variables, and avoid unnecessary re-renders or other side effects. This can be especially useful for optimizing performance in larger forms or for complex computations that depend on state variables.
+
 
 ## Day-5
 
