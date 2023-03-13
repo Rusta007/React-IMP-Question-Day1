@@ -168,7 +168,7 @@ To use this component elsewhere in the application, it would be imported and ren
 
 ![Screenshot 2023-02-27 164459](https://user-images.githubusercontent.com/94469107/221549637-b6863545-de2f-4c2f-9d39-99aed2e28ecc.png)
 
-## Update State
+## State | Update State
 
 #### Code
 
