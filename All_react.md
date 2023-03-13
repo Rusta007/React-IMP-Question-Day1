@@ -129,25 +129,7 @@ When the button is clicked, the handleClick function is called, which updates th
 
 #### Example of State:
 
-```
-import React, { useState } from 'react';      		// This line imports the React library and the useState hook from the react package.
-
-function MyComponent() {			        // This line defines a new function component called MyComponent.
-  const [count, setCount] = useState(0);	        // This line declares a new state variable called count using the useState hook. It initializes count to 0 and 							       // sets setCount as the function to update count.	
-
-  const handleClick = () => {				// This line declares a new function called handleClick that updates the count state variable by callin   	setCount(count + 1);				  // setCount and passing in the current value of count plus 1.
- 
-  }
-
-  return (
-    <div>
-      <p>Count: {count}</p>
-      <button onClick={handleClick}>Click me</button>
-    </div>
-  );
-}
-
-```
+![Screenshot 2023-03-13 165113](https://user-images.githubusercontent.com/94469107/224687732-89283e05-5128-46e9-9149-d84c651c3568.png)
 
 - Summary of code:
 ```
@@ -159,38 +141,13 @@ When the button is clicked, the handleClick function is called, which updates th
 #### Example of Props:
 
 Child Component 
-```
-import React from 'react';
 
-function Greeting(props) {    // This line defines a new function component called Greeting that takes in a single props argument.
-  return (
-    <div>
-      <h1>Hello, {props.name}!</h1>
-      <p>You are {props.age} years old.</p>
-    </div>
-  );
-}
+![Screenshot 2023-03-13 165335](https://user-images.githubusercontent.com/94469107/224688277-102fa61b-4893-41e8-809e-1d9396372f66.png)
 
-export default Greeting;
-
-```
 
 Parent Component 
-```
-import React from 'react';
-import Greeting from './Greeting';
 
-function App() {
-  return (
-    <div>
-      <Greeting name="Alice" age={25} />
-      <Greeting name="Bob" age={30} />
-    </div>
-  );
-}
-
-export default App;
-```
+![Screenshot 2023-03-13 165357](https://user-images.githubusercontent.com/94469107/224688296-b4934698-b0c9-424b-9955-576d3cb6b3bb.png)
 
 - Summary of code:
 ```
