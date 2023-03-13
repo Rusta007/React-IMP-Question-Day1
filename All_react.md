@@ -1611,14 +1611,6 @@ export default App;
 
 <img src="https://media.geeksforgeeks.org/wp-content/uploads/20210817165343/out.gif" />
 
-# Using Axios
-```
-Use npm i axios to install axios and then add it as an import to your parent component. 
-I’m going to use axios to get all of my notes, which I stored in a database.
-```
-## Output:
-
-<img src="https://levelup.gitconnected.com/fetch-api-data-with-axios-and-display-it-in-a-react-app-with-hooks-3f9c8fa89e7b" />
 
 ## Fetch API using async/await:
 
@@ -1673,11 +1665,6 @@ function App() {
 export default App;
 
 ```
-
-## Output:
-
-<img src="https://www.geeksforgeeks.org/how-to-fetch-data-from-apis-using-asynchronous-await-in-reactjs/" />
-
 
 ## Day-8
 
