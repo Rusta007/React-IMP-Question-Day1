@@ -94,6 +94,15 @@ Search Engine Optimization (SEO) is the process of optimizing your website in or
 | It cannot use Hooks. | Function Component uses Hooks, Using Hooks we can make out state as **Stateful component** . |
 | Class Component used constructor to pass props. | Function Component doesn't need it.  |
 
+## Class Component 
+
+![Screenshot 2023-03-13 155111](https://user-images.githubusercontent.com/94469107/224674330-b800c75c-577e-4e19-86f1-b8f8836ce348.png)
+
+## Function Component 
+
+![Screenshot 2023-03-13 160222](https://user-images.githubusercontent.com/94469107/224676799-93a5cefa-be66-4e4b-9370-738a5e9584a7.png)
+
+
 ## State vs Props
 
 | State | Props |
