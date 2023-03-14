@@ -1444,28 +1444,28 @@ Go to Memory tab take heap snapshots and do a comparison between times before yo
 - Its return value is always the same for the same input values
 
 ## Code:
+
 ```
-import React from 'react';
+import React, { PureComponent } from 'react';
 
-class PercentageStat extends React.PureComponent {
-
+class MyComponent extends PureComponent {
   render() {
-    const { label, score = 0, total = Math.max(1, score) } = this.props;
-
+    const { name } = this.props;
     return (
       <div>
-        <h6>{ label }</h6>
-        <span>{ Math.round(score / total * 100) }%</span>
+        <h1>Hello, {name}!</h1>
       </div>
-    )
+    );
   }
-
 }
 
-export default PercentageStat;
+export default MyComponent;
+
 ```
 
+
 ## HOC component:
+
 ```
 Higher-order components or HOC is the advanced method of reusing the component functionality logic. 
 It simply takes the original component and returns the enhanced component.
